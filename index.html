@@ -117,13 +117,49 @@
   .btn-yes:hover{transform:translateY(-3px) scale(1.04);}
   .btn-yes:active{transform:translateY(0) scale(.98);}
 
-  /* DẬN — runs away + shrinks */
+  /* DẬN — runs away + shrinks, with lots of animation */
   .btn-no{
     color:var(--cream);background:rgba(59,10,26,.55);
     border:1px solid rgba(245,241,232,.18);backdrop-filter:blur(4px);
-    z-index:2;transition:transform .35s cubic-bezier(.34,1.56,.64,1),left .35s,top .35s,opacity .4s,padding .35s,font-size .35s;
+    z-index:2;--s:1;--r:0deg;will-change:transform;
+    transition:left .35s cubic-bezier(.34,1.56,.64,1),top .35s cubic-bezier(.34,1.56,.64,1),opacity .45s,padding .35s,font-size .35s;
+    animation:noShiver 2.6s ease-in-out infinite;
   }
   .btn-no.loose{position:fixed;}
+  .btn-no.hopping{animation:noHop .58s cubic-bezier(.34,1.56,.64,1) forwards;}
+  .btn-no.gone{animation:noGone .55s ease-in forwards;pointer-events:none;}
+
+  @keyframes noShiver{
+    0%,100%{transform:scale(var(--s)) rotate(calc(var(--r) - 2.5deg));}
+    50%{transform:scale(calc(var(--s)*1.04)) rotate(calc(var(--r) + 2.5deg));}
+  }
+  @keyframes noHop{
+    0%{transform:scale(calc(var(--s)*1.32)) rotate(-22deg);filter:drop-shadow(0 0 0 transparent);}
+    28%{transform:scale(calc(var(--s)*0.82)) rotate(18deg);filter:drop-shadow(0 0 18px var(--gold));}
+    55%{transform:scale(calc(var(--s)*1.14)) rotate(-10deg);}
+    78%{transform:scale(calc(var(--s)*0.96)) rotate(6deg);}
+    100%{transform:scale(var(--s)) rotate(var(--r));filter:none;}
+  }
+  @keyframes noGone{
+    0%{transform:scale(calc(var(--s)*1.5)) rotate(0deg);opacity:1;filter:drop-shadow(0 0 22px var(--gold));}
+    100%{transform:scale(0) rotate(180deg);opacity:0;filter:none;}
+  }
+
+  /* particles + taunt text */
+  .puff{position:fixed;pointer-events:none;z-index:55;line-height:1;
+    animation:puffOut .75s ease-out forwards;}
+  @keyframes puffOut{
+    0%{transform:translate(-50%,-50%) scale(.4);opacity:.95;}
+    100%{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(1.1) rotate(var(--pr));opacity:0;}
+  }
+  .taunt{position:fixed;pointer-events:none;z-index:56;font-family:var(--body);
+    font-weight:600;font-size:15px;color:var(--gold);white-space:nowrap;
+    text-shadow:0 2px 10px rgba(0,0,0,.55);animation:tauntUp 1.15s ease-out forwards;}
+  @keyframes tauntUp{
+    0%{transform:translate(-50%,4px) scale(.5);opacity:0;}
+    22%{opacity:1;transform:translate(-50%,-6px) scale(1.08);}
+    100%{transform:translate(-50%,-52px) scale(1);opacity:0;}
+  }
 
   /* final */
   .final-emoji{font-size:clamp(46px,12vw,80px);margin-bottom:10px;
@@ -148,7 +184,7 @@
 
   <!-- SCENE 0 -->
   <section class="scene active" data-scene="0">
-    <div class="eyebrow">Kieraboo/div>
+    <div class="eyebrow">Kierabooo</div>
     <h1 class="title">Chị ơi… đừng <span class="ital">dận</span> em nữa nha</h1>
     <p class="message">Em biết em sai rồi 🥺 Chị cho em xin lỗi một chút thôi nha — bấm vào nút bên dưới giúp em nào.</p>
     <div class="btns" id="btns0"></div>
@@ -247,7 +283,9 @@
     const no = document.createElement('button');
     no.className = 'btn btn-no';
     no.textContent = 'Dận 😤';
-    no.style.transform = 'scale('+noScale+')';
+    no.style.setProperty('--s', noScale);
+    no.style.setProperty('--r', '0deg');
+    no._face = 0;
 
     const flee = (e)=>{ if(e){ e.preventDefault(); e.stopPropagation(); } dodge(no); };
     no.addEventListener('mouseenter', flee);
@@ -258,27 +296,78 @@
     container.appendChild(yes);
   }
 
+  const FACES  = ['😣','😖','😝','😵‍💫','🥺','😱'];
+  const TAUNTS = ['hụt!','ơ kìa~','hổng bắt được','nhanh ghê á','hí hí','trượt rồi','đây nè~','bắt hụt~'];
+
   function dodge(no){
     lastDodge = Date.now();
+    spawnPuff(no, 6, ['💨','✨']);          // bụi ở chỗ cũ trước khi nhảy
     noScale = Math.max(noScale * 0.82, 0);
-    if(noScale < 0.28){
-      // give up: shrink to nothing
-      no.style.transition = 'transform .5s ease, opacity .5s ease';
-      no.style.transform = 'scale(0)';
-      no.style.opacity = '0';
-      no.style.pointerEvents = 'none';
-      spawnHearts(6);
-      return;
-    }
+
+    if(noScale < 0.30){ poof(no); return; } // hết cỡ -> nổ tan
+
     no.classList.add('loose');
-    const pad = 80;
+    const pad = 70;
     const w = no.offsetWidth, h = no.offsetHeight;
-    const x = Math.random() * (window.innerWidth  - w - pad*2) + pad;
-    const y = Math.random() * (window.innerHeight - h - pad*2) + pad;
+    const x = Math.random() * Math.max(window.innerWidth  - w - pad*2, 40) + pad;
+    const y = Math.random() * Math.max(window.innerHeight - h - pad*2, 40) + pad;
     no.style.left = x + 'px';
     no.style.top  = y + 'px';
-    no.style.transform = 'scale('+noScale+') rotate('+(Math.random()*40-20)+'deg)';
+    no.style.setProperty('--s', noScale);
+    no.style.setProperty('--r', (Math.random()*44 - 22).toFixed(1) + 'deg');
+
+    // nảy lại animation
+    no.classList.remove('hopping');
+    void no.offsetWidth;
+    no.classList.add('hopping');
+    clearTimeout(no._t);
+    no._t = setTimeout(()=>no.classList.remove('hopping'), 600);
+
+    // đổi mặt cảm xúc dần
+    no.textContent = 'Dận ' + FACES[Math.min(no._face++, FACES.length-1)];
+
+    spawnTaunt(no, TAUNTS[Math.floor(Math.random()*TAUNTS.length)]);
     spawnHearts(2);
+  }
+
+  function poof(no){
+    no.classList.remove('hopping');
+    no.classList.add('gone');
+    spawnPuff(no, 16, ['✨','💥','💨','⭐','💫']);
+    spawnTaunt(no, 'hổng cho dận đâu 😝');
+    spawnHearts(8);
+  }
+
+  /* ---------- particle + taunt helpers ---------- */
+  function centerOf(el){ const r = el.getBoundingClientRect(); return {x:r.left+r.width/2, y:r.top+r.height/2, top:r.top}; }
+
+  function spawnPuff(el, count, chars){
+    const c = centerOf(el);
+    for(let i=0;i<count;i++){
+      const p = document.createElement('div');
+      p.className = 'puff';
+      p.textContent = chars[Math.floor(Math.random()*chars.length)];
+      p.style.left = c.x + 'px';
+      p.style.top  = c.y + 'px';
+      p.style.fontSize = (12 + Math.random()*16) + 'px';
+      const ang = Math.random()*Math.PI*2, dist = 30 + Math.random()*70;
+      p.style.setProperty('--tx', Math.cos(ang)*dist + 'px');
+      p.style.setProperty('--ty', Math.sin(ang)*dist + 'px');
+      p.style.setProperty('--pr', (Math.random()*180-90) + 'deg');
+      document.body.appendChild(p);
+      setTimeout(()=>p.remove(), 800);
+    }
+  }
+
+  function spawnTaunt(el, text){
+    const c = centerOf(el);
+    const t = document.createElement('div');
+    t.className = 'taunt';
+    t.textContent = text;
+    t.style.left = c.x + 'px';
+    t.style.top  = (c.top - 6) + 'px';
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(), 1200);
   }
 
   /* ---------- scene transitions ---------- */
