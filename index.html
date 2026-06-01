@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Dành riêng cho cô gái xinh nhất ❤️</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a1228;
+    --char:#0d1b30;
+    --navy-glow:#2563eb;
+    --emerald:#34d399;
+    --emerald-deep:#064e3b;
+    --gold:#fbbf24;
+    --amber:#fb923c;
+    --rose:#3b0a1a;
+    --cream:#f5f1e8;
+    --display:'Playfair Display', serif;
+    --body:'Be Vietnam Pro', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;overflow:hidden;}
+  body{
+    font-family:var(--body);
+    background:
+      radial-gradient(120% 90% at 50% -10%, rgba(52,211,153,.12), transparent 55%),
+      radial-gradient(90% 70% at 82% 112%, rgba(251,191,36,.12), transparent 55%),
+      radial-gradient(70% 55% at 12% 78%, rgba(37,99,235,.22), transparent 62%),
+      linear-gradient(160deg,#0a1228 0%, #0e1f3d 48%, #0a1228 100%);
+    color:var(--cream);
+    position:relative;
+    -webkit-tap-highlight-color:transparent;
+  }
+  /* film grain */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ===== layers ===== */
+  #feathers,#hearts{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+  #hearts{z-index:40;}
+
+  .feather{position:absolute;top:-60px;will-change:transform;opacity:0;animation:fall linear infinite;}
+  @keyframes fall{
+    0%{transform:translateY(-10vh) translateX(0) rotate(0deg);opacity:0;}
+    10%{opacity:.85;}
+    90%{opacity:.7;}
+    100%{transform:translateY(112vh) translateX(var(--drift)) rotate(var(--spin));opacity:0;}
+  }
+
+  .heart{position:absolute;bottom:-40px;font-size:22px;will-change:transform;animation:rise ease-in forwards;}
+  @keyframes rise{
+    0%{transform:translateY(0) scale(.4);opacity:0;}
+    15%{opacity:1;}
+    100%{transform:translateY(-110vh) translateX(var(--hx)) scale(1.1) rotate(var(--hr));opacity:0;}
+  }
+
+  /* ===== stage ===== */
+  .stage{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;padding:28px 22px;}
+
+  .scene{display:none;flex-direction:column;align-items:center;max-width:680px;}
+  .scene.active{display:flex;animation:enter .9s cubic-bezier(.16,1,.3,1) both;}
+  @keyframes enter{from{opacity:0;transform:translateY(26px) scale(.97);}to{opacity:1;transform:none;}}
+
+  .eyebrow{
+    font-family:var(--body);font-weight:600;letter-spacing:.42em;text-transform:uppercase;
+    font-size:11px;color:var(--gold);margin-bottom:18px;
+    display:flex;align-items:center;gap:12px;opacity:.9;
+  }
+  .eyebrow::before,.eyebrow::after{content:"";width:34px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+
+  .title{
+    font-family:var(--display);font-weight:700;line-height:1.12;
+    font-size:clamp(30px,7.5vw,56px);
+    background:linear-gradient(105deg,var(--cream) 0%,var(--emerald) 48%,var(--gold) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 40px rgba(52,211,153,.12);
+  }
+  .title .ital{font-style:italic;}
+
+  .message{
+    margin-top:20px;font-size:clamp(15px,4.2vw,19px);line-height:1.7;
+    color:rgba(245,241,232,.82);font-weight:300;max-width:540px;
+  }
+  .message b{color:var(--emerald);font-weight:500;}
+  .message .amber{color:var(--amber);font-weight:500;}
+
+  /* progress dots */
+  .dots{display:flex;gap:9px;margin-top:30px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:rgba(245,241,232,.18);transition:.4s;}
+  .dot.on{background:var(--gold);box-shadow:0 0 12px var(--gold);transform:scale(1.25);}
+
+  /* ===== buttons ===== */
+  .btns{margin-top:40px;position:relative;display:flex;gap:18px;align-items:center;
+    justify-content:center;flex-wrap:wrap;min-height:64px;width:100%;}
+
+  .btn{
+    font-family:var(--body);font-weight:600;font-size:16px;letter-spacing:.02em;
+    border:none;border-radius:999px;padding:15px 34px;cursor:pointer;position:relative;
+    transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .3s,filter .3s;
+  }
+  /* HẾT DẬN — emerald→gold, stays put */
+  .btn-yes{
+    color:#05140d;
+    background:linear-gradient(120deg,var(--emerald) 0%,#a7f3d0 50%,var(--gold) 100%);
+    box-shadow:0 10px 30px rgba(52,211,153,.35),0 0 0 1px rgba(255,255,255,.15) inset;
+    z-index:3;animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{box-shadow:0 10px 30px rgba(52,211,153,.3),0 0 0 1px rgba(255,255,255,.15) inset;}
+    50%{box-shadow:0 14px 44px rgba(251,191,36,.45),0 0 0 1px rgba(255,255,255,.25) inset;}}
+  .btn-yes:hover{transform:translateY(-3px) scale(1.04);}
+  .btn-yes:active{transform:translateY(0) scale(.98);}
+
+  /* DẬN — runs away + shrinks */
+  .btn-no{
+    color:var(--cream);background:rgba(59,10,26,.55);
+    border:1px solid rgba(245,241,232,.18);backdrop-filter:blur(4px);
+    z-index:2;transition:transform .35s cubic-bezier(.34,1.56,.64,1),left .35s,top .35s,opacity .4s,padding .35s,font-size .35s;
+  }
+  .btn-no.loose{position:fixed;}
+
+  /* final */
+  .final-emoji{font-size:clamp(46px,12vw,80px);margin-bottom:10px;
+    filter:drop-shadow(0 0 24px rgba(251,191,36,.5));animation:beat 1.3s ease-in-out infinite;}
+  @keyframes beat{0%,100%{transform:scale(1);}25%{transform:scale(1.16);}40%{transform:scale(1);}}
+  .signature{margin-top:30px;font-family:var(--display);font-style:italic;
+    font-size:clamp(16px,4.4vw,22px);color:var(--gold);}
+  .restart{margin-top:26px;background:none;border:1px solid rgba(245,241,232,.25);
+    color:rgba(245,241,232,.6);border-radius:999px;padding:9px 22px;font-family:var(--body);
+    font-size:13px;cursor:pointer;transition:.3s;}
+  .restart:hover{color:var(--cream);border-color:var(--emerald);}
+
+  .rose{font-size:clamp(34px,9vw,54px);margin-bottom:6px;filter:drop-shadow(0 0 18px rgba(59,10,26,.9));}
+</style>
+</head>
+<body>
+
+<div id="feathers"></div>
+<div id="hearts"></div>
+
+<div class="stage">
+
+  <!-- SCENE 0 -->
+  <section class="scene active" data-scene="0">
+    <div class="eyebrow">KieraBoo</div>
+    <h1 class="title">Chị ơi… đừng <span class="ital">dận</span> em nữa nha</h1>
+    <p class="message">Em biết em sai rồi 🥺 Chị cho em xin lỗi một chút thôi nha — bấm vào nút bên dưới giúp em nào.</p>
+    <div class="btns" id="btns0"></div>
+  </section>
+
+  <!-- SCENE 1 -->
+  <section class="scene" data-scene="1">
+    <div class="eyebrow">Lời thật lòng #1</div>
+    <h1 class="title">Chị là <span class="ital">cô gái xinh nhất</span> quả đất 🌍</h1>
+    <p class="message">The prettiest girl in the whole world. Em ngắm chị mỗi ngày vẫn thấy như lần đầu — <b>the most beautiful</b>, không ai bằng chị đâu.</p>
+    <div class="dots"></div>
+    <div class="btns" data-clone></div>
+  </section>
+
+  <!-- SCENE 2 -->
+  <section class="scene" data-scene="2">
+    <div class="rose">🌿</div>
+    <div class="eyebrow">Lời thật lòng #2</div>
+    <h1 class="title">Chị <span class="ital">xanh mướt</span> như tán lá em ngắm hoài</h1>
+    <p class="message">Chị thích <b>màu xanh, màu lá</b> — và đúng là ở bên chị em thấy dịu mát, bình yên y như đứng giữa một khu vườn xanh thật to.</p>
+    <div class="dots"></div>
+    <div class="btns" data-clone></div>
+  </section>
+
+  <!-- SCENE 3 -->
+  <section class="scene" data-scene="3">
+    <div class="rose">🔥</div>
+    <div class="eyebrow">Lời thật lòng #3</div>
+    <h1 class="title">Chị rực rỡ như <span class="ital">chim phượng hoàng</span></h1>
+    <p class="message">Mạnh mẽ, kiêu hãnh và đẹp một cách chói lọi. Dù có giận hờn cỡ nào, chị vẫn luôn <span class="amber">hồi sinh rực rỡ</span> trong mắt em.</p>
+    <div class="dots"></div>
+    <div class="btns" data-clone></div>
+  </section>
+
+  <!-- SCENE 4 -->
+  <section class="scene" data-scene="4">
+    <div class="rose">🥀</div>
+    <div class="eyebrow">Lời thật lòng #4</div>
+    <h1 class="title">Quý hiếm như một đoá <span class="ital">hoa hồng đen</span></h1>
+    <p class="message">Cả thế giới này chỉ có một chị thôi. Chị đặc biệt, kiêu sa và độc nhất — và em may mắn lắm mới có được chị.</p>
+    <div class="dots"></div>
+    <div class="btns" data-clone></div>
+  </section>
+
+  <!-- SCENE 5 -->
+  <section class="scene" data-scene="5">
+    <div class="rose">💧</div>
+    <div class="eyebrow">Lời hứa nhỏ #5</div>
+    <h1 class="title">Em sẽ <span class="ital">chăm chị</span> như chị chăm da</h1>
+    <p class="message">Dịu dàng và đều đặn như chị thoa <b>Klairs toner</b> mỗi tối. Mình ăn <b>healthy</b> cùng nhau, mùa đông mặc <span class="amber">quần jean lót lông</span> đi chơi nha 🧥</p>
+    <div class="dots"></div>
+    <div class="btns" data-clone></div>
+  </section>
+
+  <!-- SCENE 6 — FINAL -->
+  <section class="scene" data-scene="6">
+    <div class="final-emoji">❤️</div>
+    <div class="eyebrow">Và quan trọng nhất</div>
+    <h1 class="title">I love you,<br><span class="ital">the prettiest girl</span></h1>
+    <p class="message">Hết dận em rồi đúng không nào? 🥺 Em thương chị nhiều thật nhiều — hôm nay, ngày mai, và mãi mãi về sau.</p>
+    <div class="signature">— mãi là phượng hoàng của em —</div>
+    <button class="restart" onclick="restart()">đọc lại từ đầu ↺</button>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  const scenes = [...document.querySelectorAll('.scene')];
+  const total = scenes.length;
+  let current = 0;
+
+  /* ---------- build progress dots ---------- */
+  scenes.forEach(s=>{
+    const d = s.querySelector('.dots');
+    if(d){ for(let i=1;i<total;i++){ const o=document.createElement('span'); o.className='dot'; d.appendChild(o);} }
+  });
+  function paintDots(){
+    scenes.forEach(s=>{
+      const dots = s.querySelectorAll('.dot');
+      dots.forEach((dot,i)=>dot.classList.toggle('on', i < current));
+    });
+  }
+
+  /* ---------- evasive "Dận" button state ---------- */
+  let noScale = 1;
+
+  function makeButtons(container){
+    container.innerHTML = '';
+    const yes = document.createElement('button');
+    yes.className = 'btn btn-yes';
+    yes.textContent = current === 0 ? 'Hết dận 🥹' : 'Vẫn còn thương 💚';
+    yes.addEventListener('click', next);
+
+    const no = document.createElement('button');
+    no.className = 'btn btn-no';
+    no.textContent = 'Dận 😤';
+    no.style.transform = 'scale('+noScale+')';
+
+    const flee = (e)=>{ if(e){e.preventDefault();} dodge(no); };
+    no.addEventListener('mouseenter', flee);
+    no.addEventListener('pointerdown', flee);
+    no.addEventListener('click', flee);
+
+    container.appendChild(no);
+    container.appendChild(yes);
+  }
+
+  function dodge(no){
+    noScale = Math.max(noScale * 0.82, 0);
+    if(noScale < 0.28){
+      // give up: shrink to nothing
+      no.style.transition = 'transform .5s ease, opacity .5s ease';
+      no.style.transform = 'scale(0)';
+      no.style.opacity = '0';
+      no.style.pointerEvents = 'none';
+      spawnHearts(6);
+      return;
+    }
+    no.classList.add('loose');
+    const pad = 80;
+    const w = no.offsetWidth, h = no.offsetHeight;
+    const x = Math.random() * (window.innerWidth  - w - pad*2) + pad;
+    const y = Math.random() * (window.innerHeight - h - pad*2) + pad;
+    no.style.left = x + 'px';
+    no.style.top  = y + 'px';
+    no.style.transform = 'scale('+noScale+') rotate('+(Math.random()*40-20)+'deg)';
+    spawnHearts(2);
+  }
+
+  /* ---------- scene transitions ---------- */
+  function show(i){
+    scenes[current].classList.remove('active');
+    current = i;
+    scenes[current].classList.add('active');
+    paintDots();
+    const holder = scenes[current].querySelector('.btns');
+    if(holder) makeButtons(holder);
+  }
+  function next(){
+    spawnHearts(10);
+    if(current < total-1){ show(current+1); }
+  }
+  window.restart = function(){ noScale = 1; show(0); spawnHearts(8); };
+
+  /* ---------- hearts ---------- */
+  const heartLayer = document.getElementById('hearts');
+  const HEART_CHARS = ['❤️','💚','💛','🧡','💖','🌿'];
+  function spawnHearts(n){
+    for(let i=0;i<n;i++){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.textContent = HEART_CHARS[Math.floor(Math.random()*HEART_CHARS.length)];
+      h.style.left = Math.random()*100 + 'vw';
+      h.style.fontSize = (16 + Math.random()*22) + 'px';
+      h.style.setProperty('--hx', (Math.random()*160-80)+'px');
+      h.style.setProperty('--hr', (Math.random()*120-60)+'deg');
+      h.style.animationDuration = (2.6 + Math.random()*2) + 's';
+      heartLayer.appendChild(h);
+      setTimeout(()=>h.remove(), 5000);
+    }
+  }
+
+  /* ---------- phoenix feathers (SVG) ---------- */
+  const featherLayer = document.getElementById('feathers');
+  function featherSVG(){
+    const colors = [
+      ['#fbbf24','#fb923c'],   // gold→amber phoenix
+      ['#34d399','#064e3b'],   // emerald
+      ['#fb923c','#3b0a1a'],   // amber→rose
+    ];
+    const [c1,c2] = colors[Math.floor(Math.random()*colors.length)];
+    const id = 'g'+Math.random().toString(36).slice(2,7);
+    return `<svg width="26" height="58" viewBox="0 0 26 58" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>
+      </linearGradient></defs>
+      <path d="M13 1 C5 14 3 30 8 50 C9 54 11 57 13 57 C15 57 17 54 18 50 C23 30 21 14 13 1 Z"
+        fill="url(#${id})" opacity="0.9"/>
+      <path d="M13 6 L13 52" stroke="${c2}" stroke-width="0.8" opacity="0.7"/>
+    </svg>`;
+  }
+  function makeFeathers(count){
+    for(let i=0;i<count;i++){
+      const f = document.createElement('div');
+      f.className = 'feather';
+      f.innerHTML = featherSVG();
+      const s = 0.5 + Math.random()*0.9;
+      f.style.left = Math.random()*100 + 'vw';
+      f.style.transform = 'scale('+s+')';
+      f.style.setProperty('--drift', (Math.random()*200-100)+'px');
+      f.style.setProperty('--spin', (Math.random()*540-270)+'deg');
+      f.style.animationDuration = (9 + Math.random()*9) + 's';
+      f.style.animationDelay = (Math.random()*12) + 's';
+      featherLayer.appendChild(f);
+    }
+  }
+
+  /* ---------- init ---------- */
+  makeFeathers(18);
+  makeButtons(document.getElementById('btns0'));
+  paintDots();
+})();
+</script>
+</body>
+</html>
