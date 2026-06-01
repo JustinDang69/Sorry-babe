@@ -148,7 +148,7 @@
 
   <!-- SCENE 0 -->
   <section class="scene active" data-scene="0">
-    <div class="eyebrow">KieraBoo</div>
+    <div class="eyebrow">Kieraboo/div>
     <h1 class="title">Chị ơi… đừng <span class="ital">dận</span> em nữa nha</h1>
     <p class="message">Em biết em sai rồi 🥺 Chị cho em xin lỗi một chút thôi nha — bấm vào nút bên dưới giúp em nào.</p>
     <div class="btns" id="btns0"></div>
@@ -235,6 +235,7 @@
 
   /* ---------- evasive "Dận" button state ---------- */
   let noScale = 1;
+  let lastDodge = 0;
 
   function makeButtons(container){
     container.innerHTML = '';
@@ -248,9 +249,9 @@
     no.textContent = 'Dận 😤';
     no.style.transform = 'scale('+noScale+')';
 
-    const flee = (e)=>{ if(e){e.preventDefault();} dodge(no); };
+    const flee = (e)=>{ if(e){ e.preventDefault(); e.stopPropagation(); } dodge(no); };
     no.addEventListener('mouseenter', flee);
-    no.addEventListener('pointerdown', flee);
+    no.addEventListener('touchstart', flee, {passive:false});
     no.addEventListener('click', flee);
 
     container.appendChild(no);
@@ -258,6 +259,7 @@
   }
 
   function dodge(no){
+    lastDodge = Date.now();
     noScale = Math.max(noScale * 0.82, 0);
     if(noScale < 0.28){
       // give up: shrink to nothing
@@ -289,6 +291,7 @@
     if(holder) makeButtons(holder);
   }
   function next(){
+    if(Date.now() - lastDodge < 600){ return; } // chặn ghost click sau khi nút Dận né
     spawnHearts(10);
     if(current < total-1){ show(current+1); }
   }
